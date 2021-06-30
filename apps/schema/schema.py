@@ -1,5 +1,8 @@
 from graphene_django import DjangoObjectType
 import graphene
+# new
+import graphql_jwt
+from graphql_jwt.decorators import login_required
 
 from apps.users.models import User
 from apps.decks.models import Deck
@@ -19,6 +22,11 @@ class Mutation(graphene.ObjectType):
     create_card = CreateCard.Field()
     create_deck = CreateDeck.Field()
     update_card = UpdateCard.Field()
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
+    # delete_token_cookie = graphql_jwt.relay.DeleteJSONWebTokenCookie.Field()
+    # delete_refresh_token_cookie = graphql_jwt.DeleteRefreshTokenCookie.Field()
 
 
 # Query class
@@ -30,8 +38,14 @@ class Query(graphene.ObjectType):
     deck_cards = graphene.List(CardType, deck=graphene.Int())
 
     def resolve_users(self, info):
+        # return User.objects.all()
+        # new
+        user = info.context.user
+        if not user.is_authenticated:
+            raise Exception('Authentication credentials were not provided')
         return User.objects.all()
 
+    @login_required
     def resolve_decks(self, info):
         return Deck.objects.all()
 

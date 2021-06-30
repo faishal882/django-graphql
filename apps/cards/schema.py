@@ -56,7 +56,6 @@ class UpdateCard(graphene.Mutation):
   def mutate(self, info, id, question, answer, status):
     if status not in[1,2,3]:
       raise GraphQLError('Status out of bound.Must be in 1, 2, or 3')
-    
     c = Card.objects.get(id=id)
 
     bucket = c.bucket

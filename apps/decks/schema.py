@@ -21,6 +21,6 @@ class CreateDeck(graphene.Mutation):
         d.save()
         return CreateDeck(deck=d)
 
-# Mutation Class
-class Mutation(graphene.ObjectType):
-    create_deck = CreateDeck.Field()
+# # Mutation Class
+# class Mutation(graphene.ObjectType):
+#     create_deck = CreateDeck.Field()
